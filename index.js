@@ -47,7 +47,7 @@ var Row = React.createClass({
     let shouldDisplayHovering = activeIndex !== this.props.rowData.index;
     let Row = React.cloneElement(this.props.renderRow(this.props.rowData.data, this.props.rowData.section, this.props.rowData.index, null, this.props.active), {sortHandlers: {onLongPress: this.handleLongPress, onPressOut: this.props.list.cancel}, onLongPress: this.handleLongPress, onPressOut: this.props.list.cancel});
     return <View onLayout={this.props.onRowLayout}
-                 style={[ this.props.active && !this.props.hovering ? {height: 0.01}:null,
+                 style={[ this.props.active && !this.props.hovering ? {height: 0.01, opacity: 0.0}:null,
                           this.props.active && this.props.hovering ? {opacity: 0.0}: null,]} ref="view">
           {this.props.hovering && shouldDisplayHovering ? this.props.activeDivider : null}
           {Row}
@@ -221,7 +221,7 @@ var SortableListView = React.createClass({
         newScrollValue = currentScrollValue + (PERCENTAGE_CHANGE * SCROLL_MAX_CHANGE);
         if (newScrollValue > MAX_SCROLL_VALUE) newScrollValue = MAX_SCROLL_VALUE;
       }
-      if (moveY < SCROLL_HIGHER_BOUND && currentScrollValue > NORMAL_SCROLL_MAX 
+      if (moveY < SCROLL_HIGHER_BOUND && currentScrollValue > NORMAL_SCROLL_MAX
           && NORMAL_SCROLL_MAX > 0) {
         let PERCENTAGE_CHANGE = 1 - ((this.listLayout.height - moveY) / SCROLL_LOWER_BOUND);
         pc = PERCENTAGE_CHANGE;
@@ -261,7 +261,7 @@ var SortableListView = React.createClass({
       i++;
     }
     if (!isLast) i--;
-    
+
     if (i != this.state.hovering && i >= 0) {
       LayoutAnimation.easeInEaseOut();
       this._previouslyHovering = this.state.hovering;
@@ -298,7 +298,7 @@ var SortableListView = React.createClass({
     if (!active && isActiveRow) {
       active = {active: true};
     }
-    let hoveringIndex = this.order[this.state.hovering] || this.state.hovering;
+    let hoveringIndex = this.order[this.state.hovering];
     return (<Component
       {...this.props}
       activeDivider={this.renderActiveDivider()}
