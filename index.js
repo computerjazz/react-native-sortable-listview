@@ -90,7 +90,7 @@ class Row extends React.Component {
           : null}
         {Row}
       </View>
-      {this.props.isLast && <View style={{ position: 'absolute', left: 0, right: 0, height: 400}} />}
+      {/* {this.props.isLast && <View style={{backgroundColor:'red', position: 'absolute', opacity: 0.1, left: 0, right: 0, height: 200}} />} */}
       </View>
     )
   }
@@ -240,7 +240,7 @@ class SortableListView extends React.Component {
           this.scrollContainerHeight - this.listLayout.height + itemHeight
         )
         if (this.scrollValue > MAX_HEIGHT) {
-          this.scrollTo({ y: MAX_HEIGHT })
+        //  this.scrollTo({ y: MAX_HEIGHT })
         }
 
         this.state.active = false
@@ -408,6 +408,7 @@ class SortableListView extends React.Component {
 
     const hoveringIndex = this.order[this.state.hovering] || this.state.hovering
     const isLast = this.props.order[this.props.order.length - 1] === data
+    if (index === 'last') return <Row active={false} list={{state: { active: null }}} rowData={{last: 'last'}} renderRow={() => <View style={{ height: 200}} />}  />
     return (
       <Component
         {...this.props}
@@ -425,6 +426,7 @@ class SortableListView extends React.Component {
         onRowLayout={this._updateLayoutMap(index)}
         isLast={isLast}
       />
+
     )
   }
 
@@ -439,6 +441,7 @@ class SortableListView extends React.Component {
   renderActive = () => {
     if (!this.state.active) return
     const index = this.state.active.rowData.index
+    if (index == 'last') return
     return this.renderRow(this.props.data[index], 's1', index, () => {}, {
       active: true,
       thumb: true,
@@ -468,10 +471,26 @@ class SortableListView extends React.Component {
   }
 
   render() {
+
+    console.log({
+      ...this.props.data,
+      last: 'last',
+    })
+
     const dataSource = this.state.ds.cloneWithRows(
-      this.props.data,
-      this.props.order
+      {
+        ...this.props.data,
+        last: 'last',
+      },
+      [...this.props.order, 'last']
     )
+    // const dataSource = this.state.ds.cloneWithRows(
+    //   this.props.data,
+    //   this.props.order
+    // )
+    console.log('DATA PROPS', this.props.data)
+    console.log('ORDER PROPS', this.props.order)
+    console.log('DATASOURCE', dataSource)
     const scrollEnabled =
       !this.state.active && this.props.scrollEnabled !== false
 
