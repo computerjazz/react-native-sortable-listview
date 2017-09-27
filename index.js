@@ -76,10 +76,11 @@ class Row extends React.Component {
       }
     )
     return (
+      <View>
       <View
         onLayout={this.props.onRowLayout}
         style={[
-          this.props.active && !this.props.hovering ? { height: 0.01, opacity: 0.0 } : null,
+          this.props.active && !this.props.hovering ? { height: 0.1, opacity: 0.0 } : null,
           this.props.active && this.props.hovering ? { opacity: 0.0 } : null,
         ]}
         ref="view"
@@ -88,6 +89,8 @@ class Row extends React.Component {
           ? this.props.activeDivider
           : null}
         {Row}
+      </View>
+      {this.props.isLast && <View style={{ position: 'absolute', left: 0, right: 0, height: 400}} />}
       </View>
     )
   }
@@ -107,7 +110,6 @@ class SortRow extends React.Component {
         opacity: props.activeOpacity || 0.2,
         height: layout.frameHeight,
         overflow: 'hidden',
-        backgroundColor: 'transparent',
         marginTop: layout.pageY - wrapperLayout.pageY, // Account for top bar spacing
       },
     }
@@ -331,7 +333,7 @@ class SortableListView extends React.Component {
       }
       if (newScrollValue !== null && !this.props.limitScrolling) {
         this.scrollValue = newScrollValue
-        this.scrollTo({ y: this.scrollValue })
+      //  this.scrollTo({ y: this.scrollValue })
       }
       this.moved && this.checkTargetElement()
       requestAnimationFrame(this.scrollAnimation)
@@ -405,6 +407,7 @@ class SortableListView extends React.Component {
       !active && this.state.active && this.state.active.rowData.index === index
 
     const hoveringIndex = this.order[this.state.hovering] || this.state.hovering
+    const isLast = this.props.order[this.props.order.length - 1] === data
     return (
       <Component
         {...this.props}
@@ -420,6 +423,7 @@ class SortableListView extends React.Component {
         rowData={{ data, section, index }}
         onRowActive={this.handleRowActive}
         onRowLayout={this._updateLayoutMap(index)}
+        isLast={isLast}
       />
     )
   }
