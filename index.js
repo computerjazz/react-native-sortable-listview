@@ -76,12 +76,12 @@ class Row extends React.Component {
       }
     )
     return (
-      <View>
       <View
         onLayout={this.props.onRowLayout}
         style={[
-          this.props.active && !this.props.hovering ? { height: 0.1, opacity: 0.0 } : null,
-          this.props.active && this.props.hovering ? { opacity: 0.0 } : null,
+          this.props.active && !this.props.hovering ? { height: 0.1, opacity: 0.5 } : null,
+          this.props.active && this.props.hovering ? { opacity: 1.0 } : null,
+          this.props.isLast && { height: 500, backgroundColor: 'green' },
         ]}
         ref="view"
       >
@@ -89,8 +89,6 @@ class Row extends React.Component {
           ? this.props.activeDivider
           : null}
         {Row}
-      </View>
-      {/* {this.props.isLast && <View style={{backgroundColor:'red', position: 'absolute', opacity: 0.1, left: 0, right: 0, height: 200}} />} */}
       </View>
     )
   }
@@ -407,8 +405,19 @@ class SortableListView extends React.Component {
       !active && this.state.active && this.state.active.rowData.index === index
 
     const hoveringIndex = this.order[this.state.hovering] || this.state.hovering
-    const isLast = this.props.order[this.props.order.length - 1] === data
-    if (index === 'last') return <Row active={false} list={{state: { active: null }}} rowData={{last: 'last'}} renderRow={() => <View style={{ height: 200}} />}  />
+    const isLast = this.order[this.order.length - 1] === data
+    if (index === 'last') return (
+      <Row
+        key={index}
+        list={this}
+        ref={view => {this._rowRefs[active ? 'ghost' : index] = view}}
+        active={false}
+        list={{state: { active: null }}}
+        rowData={{[index]: index}}
+        isLast
+        renderRow={() => <View style={[{ flex: 999, backgroundColor: index === 'last' ? 'red' : 'yellow', height: 200 }]} />}
+      />
+    )
     return (
       <Component
         {...this.props}
@@ -424,7 +433,6 @@ class SortableListView extends React.Component {
         rowData={{ data, section, index }}
         onRowActive={this.handleRowActive}
         onRowLayout={this._updateLayoutMap(index)}
-        isLast={isLast}
       />
 
     )
@@ -472,11 +480,6 @@ class SortableListView extends React.Component {
 
   render() {
 
-    console.log({
-      ...this.props.data,
-      last: 'last',
-    })
-
     const dataSource = this.state.ds.cloneWithRows(
       {
         ...this.props.data,
@@ -484,13 +487,6 @@ class SortableListView extends React.Component {
       },
       [...this.props.order, 'last']
     )
-    // const dataSource = this.state.ds.cloneWithRows(
-    //   this.props.data,
-    //   this.props.order
-    // )
-    console.log('DATA PROPS', this.props.data)
-    console.log('ORDER PROPS', this.props.order)
-    console.log('DATASOURCE', dataSource)
     const scrollEnabled =
       !this.state.active && this.props.scrollEnabled !== false
 
