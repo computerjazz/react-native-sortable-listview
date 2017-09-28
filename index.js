@@ -79,9 +79,8 @@ class Row extends React.Component {
       <View
         onLayout={this.props.onRowLayout}
         style={[
-          this.props.active && !this.props.hovering ? { height: 0.1, opacity: 0.5 } : null,
-          this.props.active && this.props.hovering ? { opacity: 1.0 } : null,
-          this.props.isLast && { height: 500, backgroundColor: 'green' },
+          this.props.active && !this.props.hovering ? { height: 0.01, opacity: 0.0 } : null,
+          this.props.active && this.props.hovering ? { opacity: 0.0 } : null,
         ]}
         ref="view"
       >
@@ -108,6 +107,7 @@ class SortRow extends React.Component {
         opacity: props.activeOpacity || 0.2,
         height: layout.frameHeight,
         overflow: 'hidden',
+        backgroundColor: 'transparent',
         marginTop: layout.pageY - wrapperLayout.pageY, // Account for top bar spacing
       },
     }
@@ -406,18 +406,9 @@ class SortableListView extends React.Component {
 
     const hoveringIndex = this.order[this.state.hovering] || this.state.hovering
     const isLast = this.order[this.order.length - 1] === data
-    if (index === 'last') return (
-      <Row
-        key={index}
-        list={this}
-        ref={view => {this._rowRefs[active ? 'ghost' : index] = view}}
-        active={false}
-        list={{state: { active: null }}}
-        rowData={{[index]: index}}
-        isLast
-        renderRow={() => <View style={[{ flex: 999, backgroundColor: index === 'last' ? 'red' : 'yellow', height: 200 }]} />}
-      />
-    )
+    if (index === 'last') {
+      return  <View style={{ height: this.state.hovering ? 2000 : 100}} />
+    }
     return (
       <Component
         {...this.props}
@@ -479,6 +470,7 @@ class SortableListView extends React.Component {
   }
 
   render() {
+
 
     const dataSource = this.state.ds.cloneWithRows(
       {
